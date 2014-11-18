@@ -16,24 +16,24 @@ struct Arg : public option::Arg
 enum programOptions {UNKNOWN, HELP, EDIT, PATTERN};
 
 const option::Descriptor usage[] =
- {
-  {UNKNOWN, 0, "" , "", Arg::None, "USAGE: findpat [OPTIONS] PATTERN TEXTFILE [TEXTFILE]" },
-  {UNKNOWN, 0, "" , "", Arg::None, "Search for PATTERN in each TEXTFILE\n\n"
+  {
+    {UNKNOWN, 0, "" , "", Arg::None, "USAGE: findpat [OPTIONS] PATTERN TEXTFILE [TEXTFILE]" },
+    {UNKNOWN, 0, "" , "", Arg::None, "Search for PATTERN in each TEXTFILE\n\n"
                                              "Options:" },
-  {HELP,    0, "h" , "help", Arg::None, "  --help, -h  \tPrint usage and exit" },
-  {EDIT,    0, "e", "edit", Arg::NonNegative, "  --edit, -e  \tSpecify a maximun edit distance to find all approximate occurrences of PATTERN" },
-  {PATTERN,    0, "p", "pattern", Arg::NonEmpty, "  --pattern, -p  \tAdd to PATTERN the patterns from the file listed in patternfile" },
-  {UNKNOWN, 0, "",  "", Arg::None, "\nExamples:\n"
+    {HELP,    0, "h" , "help", Arg::None, "  --help, -h  \tPrint usage and exit" },
+    {EDIT,    0, "e", "edit", Arg::NonNegative, "  --edit, -e  \tSpecify a maximun edit distance to find all approximate occurrences of PATTERN" },
+    {PATTERN,    0, "p", "pattern", Arg::NonEmpty, "  --pattern, -p  \tAdd to PATTERN the patterns from the file listed in patternfile" },
+    {UNKNOWN, 0, "",  "", Arg::None, "\nExamples:\n"
                                              "  findpat ababc textfile1.txt textfile2.txt\n"
                                              "  findpat -e 2 -p patterfile.txt ababc textfile.txt\n" },
-  {0,0,0,0,0,0}
+    {0,0,0,0,0,0}
  };
 
 int main(int argc, char** argv) {
 
   // Optional parameters
-	int editDistance;
-	string patternFile;
+  int editDistance;
+  string patternFile;
 
   // Required parameters (positional options)
   string pattern;
