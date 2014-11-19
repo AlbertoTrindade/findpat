@@ -7,12 +7,13 @@ TARGET_DIR = ../bin/
 CC = g++
 CFLAGS = -std=c++0x -Wall -g
 
+MKDIR = mkdir -p
 RM = rm -r
 
 #---------------------------------------------
 
 all:
-	mkdir -p $(TARGET_DIR)
+	$(MKDIR) $(TARGET_DIR)
 	$(CC) $(CFLAGS) $(SOURCES) -I $(INCLUDES)  -Wall -o $(TARGET_DIR)$(MYPROGRAM)
 
 clean:

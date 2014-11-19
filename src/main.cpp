@@ -13,16 +13,22 @@ struct Arg : public option::Arg
   static option::ArgStatus NonNegative(const option::Option& option, bool message);
 };
 
-enum programOptions {UNKNOWN, HELP, EDIT, PATTERN};
+enum programOptions {UNKNOWN, HELP, EDIT, PATTERNFILE, COUNT};
 
 const option::Descriptor usage[] =
   {
-    {UNKNOWN, 0, "" , "", Arg::None, "USAGE: findpat [OPTIONS] PATTERN TEXTFILE [TEXTFILE]" },
-    {UNKNOWN, 0, "" , "", Arg::None, "Search for PATTERN in each TEXTFILE\n\n"
+    {UNKNOWN, 0, "" , "", Arg::None, "USAGE: findpat [OPTIONS] PATTERN TEXTFILE [TEXTFILE...]" },
+    {UNKNOWN, 0, "" , "", Arg::None, "Search for PATTERN in each TEXTFILE\n"
+                                             "If --pattern option is used, a list of patterns will be used instead of PATTERN\n"
+                                             "Multiple files can be indicated for TEXTFILE by using wildcards\n\n"
                                              "Options:" },
-    {HELP,    0, "h" , "help", Arg::None, "  --help, -h  \tPrint usage and exit" },
-    {EDIT,    0, "e", "edit", Arg::NonNegative, "  --edit, -e  \tSpecify a maximun edit distance to find all approximate occurrences of PATTERN" },
-    {PATTERN,    0, "p", "pattern", Arg::NonEmpty, "  --pattern, -p  \tAdd to PATTERN the patterns from the file listed in patternfile" },
+    {HELP, 0, "h" , "help", Arg::None, "  --help, -h  \tPrint usage and exit" },
+    {EDIT, 0, "e", "edit", Arg::NonNegative, "  --edit, -e  \tSpecify a maximun edit distance to find approximate occurrences of PATTERN"
+                                                              " or patterns specified by --pattern option, instead of the default exact ones" },
+    {PATTERNFILE, 0, "p", "pattern", Arg::NonEmpty, "  --pattern, -p  \tSpecify a file with patterns to be searched, one per line," 
+                                                                          " instead of using PATTERN" },
+    {COUNT, 0, "c", "count", Arg::None, "  --count, -c  \tInstead of printing the lines in which the patterns occur,"
+                                                             " the total count of occurrences per file will be shown" },
     {UNKNOWN, 0, "",  "", Arg::None, "\nExamples:\n"
                                              "  findpat ababc textfile1.txt textfile2.txt\n"
                                              "  findpat -e 2 -p patterfile.txt ababc textfile.txt\n" },
@@ -70,8 +76,8 @@ int main(int argc, char** argv) {
   }
 
   // Pattern file option
-  if (options[PATTERN]) {
-    patternFile = options[PATTERN].last()->arg;
+  if (options[PATTERNFILE]) {
+    patternFile = options[PATTERNFILE].last()->arg;
 
     cout << "Pattern file: " << patternFile << endl;
   }
@@ -80,33 +86,51 @@ int main(int argc, char** argv) {
 
   int positionalOptionsCount = parse.nonOptionsCount();
 
-  if (positionalOptionsCount == 0) {
-    cerr << "You have to specify a pattern for PATTERN" << endl;
-  }
-  else if (positionalOptionsCount == 1) {
-    cerr << "You have to specity at least a textfile for TEXTFILE" << endl;
-  }
-  else {
+  if (options[PATTERNFILE]){ // if patternfile is not set, positional option PATTERN needs to be
+    if (positionalOptionsCount == 0) {
+      cerr << "You have to specity at least a textfile for TEXTFILE" << endl;
 
-    for (int i = 0; i < parse.nonOptionsCount(); ++i){
-
-      if (i == 0) { // PATTERN is the first one
-        pattern = parse.nonOption(i);
-      }
-      else { // The remaining are TETXTFILE
+      return 1;
+    }
+    else{
+      for (int i = 0; i < parse.nonOptionsCount(); ++i){
+        // all the positional options are TEXTFILE
         textFiles.push_back(parse.nonOption(i));
       }
     }
-
-    cout << "Pattern: " << pattern << endl;
-
-    cout << "Text files: ";
-    for (string textFile : textFiles) {
-      cout << textFile << " ";
-    }
-
-    cout << endl;
   }
+  else { // if patternfile is set, we have only TEXTFILE as positional options
+    if (positionalOptionsCount == 0) {
+      cerr << "You have to specify a pattern for PATTERN" << endl;
+
+      return 1;
+    }
+    else if (positionalOptionsCount == 1) {
+      cerr << "You have to specity at least a textfile for TEXTFILE" << endl;
+
+      return 1;
+    }
+    else {
+      for (int i = 0; i < parse.nonOptionsCount(); ++i){
+
+        if (i == 0) { // PATTERN is the first one
+          pattern = parse.nonOption(i);
+        }
+        else { // The remaining are TEXTFILE
+          textFiles.push_back(parse.nonOption(i));
+        }
+      }
+    }
+  }
+
+  cout << "Pattern: " << pattern << endl;
+
+  cout << "Text files: ";
+  for (string textFile : textFiles) {
+    cout << textFile << " ";
+  }
+
+  cout << endl;
 
   // Unknown options
   for (option::Option* option = options[UNKNOWN]; option; option = option->next()) {

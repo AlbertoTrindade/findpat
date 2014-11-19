@@ -6,7 +6,7 @@ Para gerar o executável:
 
 Para rodar o executável:
 - cd bin/
-- ./findpat [OPTIONS] PATTERN TEXTFILE [TEXTFILE]
+- ./findpat [OPTIONS] PATTERN TEXTFILE [TEXTFILE...]
 
 Para apagar o diretório bin com o executável:
 - cd src/
