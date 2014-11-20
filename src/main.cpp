@@ -86,8 +86,8 @@ int main(int argc, char** argv) {
 
   int positionalOptionsCount = parse.nonOptionsCount();
 
-  if (options[PATTERNFILE]){ // if patternfile is not set, positional option PATTERN needs to be
-    if (positionalOptionsCount == 0) {
+  if (options[PATTERNFILE]){ // if patternfile is set, we have only TEXTFILE as positional options
+    if (positionalOptionsCount == 0) { 
       cerr << "You have to specity at least a textfile for TEXTFILE" << endl;
 
       return 1;
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
       }
     }
   }
-  else { // if patternfile is set, we have only TEXTFILE as positional options
+  else { // if patternfile is not set, positional option PATTERN needs to be
     if (positionalOptionsCount == 0) {
       cerr << "You have to specify a pattern for PATTERN" << endl;
 
