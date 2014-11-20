@@ -19,15 +19,15 @@ const option::Descriptor usage[] =
   {
     {UNKNOWN, 0, "" , "", Arg::None, "USAGE: findpat [OPTIONS] PATTERN TEXTFILE [TEXTFILE...]" },
     {UNKNOWN, 0, "" , "", Arg::None, "Search for PATTERN in each TEXTFILE\n"
-                                             "If --pattern option is used, a list of patterns will be used instead of PATTERN\n"
+                                             "If --pattern option is set, a list of patterns will be used instead of PATTERN\n"
                                              "Multiple files can be indicated for TEXTFILE by using wildcards\n\n"
                                              "Options:" },
-    {HELP, 0, "h" , "help", Arg::None, "  --help, -h  \tPrint usage and exit" },
-    {EDIT, 0, "e", "edit", Arg::NonNegative, "  --edit, -e  \tSpecify a maximun edit distance to find approximate occurrences of PATTERN"
+    {HELP, 0, "h" , "help", Arg::None, "  -h, --help  \tPrint usage and exit" },
+    {EDIT, 0, "e", "edit", Arg::NonNegative, "  -e, --edit  \tSpecify a maximun edit distance to find approximate occurrences of PATTERN"
                                                               " or patterns specified by --pattern option, instead of the default exact ones" },
-    {PATTERNFILE, 0, "p", "pattern", Arg::NonEmpty, "  --pattern, -p  \tSpecify a file with patterns to be searched, one per line," 
+    {PATTERNFILE, 0, "p", "pattern", Arg::NonEmpty, "  -p, --pattern  \tSpecify a file with patterns to be searched, one per line," 
                                                                           " instead of using PATTERN" },
-    {COUNT, 0, "c", "count", Arg::None, "  --count, -c  \tInstead of printing the lines in which the patterns occur,"
+    {COUNT, 0, "c", "count", Arg::None, "  -c, --count  \tInstead of printing the lines in which the patterns occur,"
                                                              " the total count of occurrences per file will be shown" },
     {UNKNOWN, 0, "",  "", Arg::None, "\nExamples:\n"
                                              "  findpat ababc textfile1.txt textfile2.txt\n"
@@ -82,18 +82,23 @@ int main(int argc, char** argv) {
     cout << "Pattern file: " << patternFile << endl;
   }
 
+  // Count option
+  if (options[COUNT]) {
+    cout << "Count flag was set" << endl;
+  }
+
   // Positional options (required parameters)
 
   int positionalOptionsCount = parse.nonOptionsCount();
 
   if (options[PATTERNFILE]){ // if patternfile is set, we have only TEXTFILE as positional options
-    if (positionalOptionsCount == 0) { 
+    if (positionalOptionsCount == 0) {
       cerr << "You have to specity at least a textfile for TEXTFILE" << endl;
 
       return 1;
     }
     else{
-      for (int i = 0; i < parse.nonOptionsCount(); ++i){
+      for (int i = 0; i < parse.nonOptionsCount(); i++){
         // all the positional options are TEXTFILE
         textFiles.push_back(parse.nonOption(i));
       }
@@ -111,7 +116,7 @@ int main(int argc, char** argv) {
       return 1;
     }
     else {
-      for (int i = 0; i < parse.nonOptionsCount(); ++i){
+      for (int i = 0; i < parse.nonOptionsCount(); i++){
 
         if (i == 0) { // PATTERN is the first one
           pattern = parse.nonOption(i);
@@ -157,7 +162,7 @@ option::ArgStatus Arg::NonEmpty(const option::Option& option, bool message) {
 // Checking logic for non-negative argument
 option::ArgStatus Arg::NonNegative(const option::Option& option, bool message) {
 
-  char *p = 0;
+  char* p = 0;
 
   if (option.arg) {
     double v = strtol(option.arg, &p, 10);
