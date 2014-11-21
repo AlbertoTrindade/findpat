@@ -1,3 +1,4 @@
+#include "StringMatcherProcessor.h"
 #include "optionparser.h"
 
 #include <iostream>
@@ -40,6 +41,7 @@ int main(int argc, char** argv) {
   // Optional parameters
   int editDistance;
   string patternFile;
+  bool count;
 
   // Required parameters (positional options)
   string pattern;
@@ -71,27 +73,21 @@ int main(int argc, char** argv) {
   // Help option
   if (options[EDIT]) {
     editDistance = strtol(options[EDIT].last()->arg, NULL, 10);
-
-    cout << "Edit distance: " << editDistance << endl;
   }
 
   // Pattern file option
   if (options[PATTERNFILE]) {
     patternFile = options[PATTERNFILE].last()->arg;
-
-    cout << "Pattern file: " << patternFile << endl;
   }
 
   // Count option
-  if (options[COUNT]) {
-    cout << "Count flag was set" << endl;
-  }
+  count = options[COUNT];
 
   // Positional options (required parameters)
 
   int positionalOptionsCount = parse.nonOptionsCount();
 
-  if (options[PATTERNFILE]){ // if patternfile is set, we have only TEXTFILE as positional options
+  if (options[PATTERNFILE]) { // if patternfile is set, we have only TEXTFILE as positional options
     if (positionalOptionsCount == 0) {
       cerr << "You have to specity at least a textfile for TEXTFILE" << endl;
 
@@ -128,19 +124,12 @@ int main(int argc, char** argv) {
     }
   }
 
-  cout << "Pattern: " << pattern << endl;
-
-  cout << "Text files: ";
-  for (string textFile : textFiles) {
-    cout << textFile << " ";
-  }
-
-  cout << endl;
-
   // Unknown options
   for (option::Option* option = options[UNKNOWN]; option; option = option->next()) {
     cout << "Unknown option: " << option->name << endl;
   }
+
+  StringMatcherProcessor::processParameters(editDistance, patternFile, count, pattern, textFiles);
 
   return 0;
 }
