@@ -3,10 +3,13 @@
 
 #include <iostream>
 
+#include <glob.h>
 #include <string>
 #include <vector>
 
 using namespace std;
+
+void addExpandedFiles(string& wildcardedFile, vector<string>& files);
 
 struct Arg : public option::Arg
 {
@@ -96,7 +99,14 @@ int main(int argc, char** argv) {
     else{
       for (int i = 0; i < parse.nonOptionsCount(); i++){
         // all the positional options are TEXTFILE
-        textFiles.push_back(parse.nonOption(i));
+        string textFile = parse.nonOption(i);
+
+        if (textFile.find("*") != string::npos) { // textFile has wildcard, let us expand the files
+         addExpandedFiles(textFile, textFiles);
+        }
+        else { // single file
+          textFiles.push_back(textFile);
+        }
       }
     }
   }
@@ -118,7 +128,14 @@ int main(int argc, char** argv) {
           pattern = parse.nonOption(i);
         }
         else { // The remaining are TEXTFILE
-          textFiles.push_back(parse.nonOption(i));
+          string textFile = parse.nonOption(i);
+
+          if (textFile.find("*") != string::npos) { // textFile has wildcard
+            addExpandedFiles(textFile, textFiles);
+          }
+          else {
+            textFiles.push_back(textFile);
+          }
         }
       }
     }
@@ -132,6 +149,25 @@ int main(int argc, char** argv) {
   StringMatcherProcessor::processParameters(editDistance, patternFile, count, pattern, textFiles);
 
   return 0;
+}
+
+void addExpandedFiles(string& wildcardedFile, vector<string>& files) {
+  
+  glob_t glob_result;
+  vector<string> expandedFiles;
+
+  glob(wildcardedFile.c_str(), GLOB_TILDE, NULL, &glob_result);
+    
+  for(unsigned int i = 0; i < glob_result.gl_pathc; i++){
+    expandedFiles.push_back(string(glob_result.gl_pathv[i]));
+  }
+
+  globfree(&glob_result);
+
+  // Adding each expanded file to files
+  for (string expandedFile : expandedFiles) {
+    files.push_back(expandedFile);
+  }
 }
 
 // Checking logic for non-empty argument
