@@ -153,21 +153,16 @@ int main(int argc, char** argv) {
 
 void addExpandedFiles(string& wildcardedFile, vector<string>& files) {
   
-  glob_t glob_result;
-  vector<string> expandedFiles;
+  glob_t globResult;
 
-  glob(wildcardedFile.c_str(), GLOB_TILDE, NULL, &glob_result);
+  glob(wildcardedFile.c_str(), GLOB_TILDE, NULL, &globResult);
     
-  for(unsigned int i = 0; i < glob_result.gl_pathc; i++){
-    expandedFiles.push_back(string(glob_result.gl_pathv[i]));
-  }
-
-  globfree(&glob_result);
-
   // Adding each expanded file to files
-  for (string expandedFile : expandedFiles) {
-    files.push_back(expandedFile);
+  for(unsigned int i = 0; i < globResult.gl_pathc; i++){
+    files.push_back(string(globResult.gl_pathv[i]));
   }
+
+  globfree(&globResult);
 }
 
 // Checking logic for non-empty argument
