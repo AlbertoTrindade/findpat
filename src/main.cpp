@@ -58,7 +58,8 @@ int main(int argc, char** argv) {
 
   // Initializing option parser structures
   option::Stats  stats(usage, argc, argv);
-  option::Option options[stats.options_max], buffer[stats.buffer_max];
+  option::Option* options = new option::Option[stats.options_max];
+  option::Option* buffer = new option::Option[stats.buffer_max];
   option::Parser parse(usage, argc, argv, options, buffer);
 
   // Error in option parsing
