@@ -5,7 +5,15 @@ using namespace std;
 class BoyerMooreMatcher: public StringMatcher {
 
 private:
+  const int ALPHABET_LEN = 256;
+
   string pattern;
+  int* badChar;
+  int* goodSuffix;
+
+  int* createBadChar();
+  int* createBorder(string& pattern);
+  int* createGoodSuffix();
 
 public:
   BoyerMooreMatcher(string& pattern);

@@ -31,7 +31,7 @@ void StringMatcherProcessor::processParameters (int editDistance,
   if (editDistance == 0) {// exact matching
 
     if (patterns.size() == 1) { // use algorithm for one pattern
-      stringMatcher = new BoyerMooreMatcher(pattern);
+      stringMatcher = new BoyerMooreMatcher(patterns.at(0));
     }
     else { // use algorithm for more than one patterns
       stringMatcher = new AhoCorasickMatcher(patterns);
