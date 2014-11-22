@@ -1,6 +1,7 @@
 #include "BoyerMooreMatcher.h"
 
-BoyerMooreMatcher::BoyerMooreMatcher(vector<string>& patterns) : StringMatcher(patterns){
+BoyerMooreMatcher::BoyerMooreMatcher(string& pattern) {
+  this->pattern = pattern;
   preProcessPatterns();
 }
 
@@ -9,7 +10,6 @@ BoyerMooreMatcher::~BoyerMooreMatcher(){
 }
 
 int BoyerMooreMatcher::findMatches(string& text) {
-  string pattern = patterns.at(0);
   int matchesCount = 0;
 
   return matchesCount;

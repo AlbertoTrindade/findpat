@@ -35,8 +35,8 @@ const option::Descriptor usage[] =
                                                              " the total count of occurrences per file will be shown" },
     {UNKNOWN, 0, "",  "", Arg::None, "\nExamples:\n"
                                              "  findpat ababc textfile1.txt textfile2.txt\n"
-                                             "  findpat -e 2 -p patterfile.txt ababc textfile.txt\n" },
-    {0,0,0,0,0,0}
+                                             "  findpat -e 2 -p patterfile.txt textfile.txt\n" },
+    {0, 0, 0, 0, 0, 0}
  };
 
 int main(int argc, char** argv) {
@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
     return 0;
   }
 
-  // Help option
+  // Edit option
   if (options[EDIT]) {
     editDistance = strtol(options[EDIT].last()->arg, NULL, 10);
   }

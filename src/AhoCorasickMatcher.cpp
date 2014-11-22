@@ -1,6 +1,7 @@
 #include "AhoCorasickMatcher.h"
 
-AhoCorasickMatcher::AhoCorasickMatcher(vector<string>& patterns) : StringMatcher(patterns){
+AhoCorasickMatcher::AhoCorasickMatcher(vector<string>& patterns) {
+  this->patterns = patterns;
   preProcessPatterns();
 }
 

@@ -4,8 +4,11 @@ using namespace std;
 
 class BoyerMooreMatcher: public StringMatcher {
 
+private:
+  string pattern;
+
 public:
-  BoyerMooreMatcher(vector<string>& patterns);
+  BoyerMooreMatcher(string& pattern);
   ~BoyerMooreMatcher();
   int findMatches(string& text);
   void preProcessPatterns();

@@ -31,7 +31,7 @@ void StringMatcherProcessor::processParameters (int editDistance,
   if (editDistance == 0) {// exact matching
 
     if (patterns.size() == 1) { // use algorithm for one pattern
-      stringMatcher = new BoyerMooreMatcher(patterns);
+      stringMatcher = new BoyerMooreMatcher(pattern);
     }
     else { // use algorithm for more than one patterns
       stringMatcher = new AhoCorasickMatcher(patterns);
@@ -71,7 +71,7 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
   long long textFileSize = position;
   long long bufferSize = min((long long) BUFFER_SIZE, textFileSize);
 
-  textFile.seekg(0,ios::beg);
+  textFile.seekg(0, ios::beg);
 
   // Creating buffer to read text file by chunks
   char* buffer = new char[bufferSize];
