@@ -12,8 +12,8 @@ private:
   int* goodSuffix;
 
   int* createBadChar();
-  int* createBorder(string& pattern);
   int* createGoodSuffix();
+  int* createBorder(string& pattern);
 
 public:
   BoyerMooreMatcher(string& pattern);
