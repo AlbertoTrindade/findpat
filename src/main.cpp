@@ -42,7 +42,7 @@ const option::Descriptor usage[] =
 int main(int argc, char** argv) {
 
   // Optional parameters
-  int editDistance;
+  int editDistance = 0;
   string patternFile;
   bool count;
 

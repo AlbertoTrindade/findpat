@@ -12,16 +12,17 @@ using namespace std;
 class StringMatcherProcessor {
 
 private:
+  static const int MAX_PATTERNS_BOYER_MOORE = 100;
   static const int BUFFER_SIZE = 50000;
 
   static int findMatchesTextFile (string& textFileName, 
-                                  StringMatcher* stringMatcher,
+                                  vector<StringMatcher*>& stringMatchers,
                                   bool count);
 
   static int processTextFileLine (char* buffer, 
                                   int length, 
                                   string& textFileName, 
-                                  StringMatcher* stringMatcher,
+                                  vector<StringMatcher*>& stringMatchers,
                                   bool count);
 
 public:

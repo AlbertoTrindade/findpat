@@ -23,18 +23,27 @@ void StringMatcherProcessor::processParameters (int editDistance,
       patterns.push_back(patternInFile);
     }
   }
+  
+  vector<StringMatcher*> stringMatchers;
+  int patternsCount = patterns.size();
 
   // Checking the type of matching algorithm to be used
-  
-  StringMatcher* stringMatcher = NULL;
 
   if (editDistance == 0) {// exact matching
 
-    if (patterns.size() == 1) { // use algorithm for one pattern
-      stringMatcher = new BoyerMooreMatcher(patterns.at(0));
+    if (patternsCount <= MAX_PATTERNS_BOYER_MOORE) { // use BoyerMoore until this number of patterns
+
+      // We have one string matcher for each pattern
+      for (int i = 0; i < patternsCount; i++) {
+        StringMatcher* stringMatcher = new BoyerMooreMatcher(patterns.at(i));
+        stringMatchers.push_back(stringMatcher);
+      }
     }
-    else { // use algorithm for more than one patterns
-      stringMatcher = new AhoCorasickMatcher(patterns);
+    else { // use Aho-Corasick for a larger number of patterns
+
+      // We have only one string matcher for all the patterns
+      StringMatcher* stringMatcher = new AhoCorasickMatcher(patterns);
+      stringMatchers.push_back(stringMatcher);
     }
   }
   else { // approximate matching
@@ -46,7 +55,7 @@ void StringMatcherProcessor::processParameters (int editDistance,
   int totalMatchesCount;
 
   for (string textFileName : textFilesName) {
-    totalMatchesCount = findMatchesTextFile(textFileName, stringMatcher, count);
+    totalMatchesCount = findMatchesTextFile(textFileName, stringMatchers, count);
 
     // if count option is set, the total matches count per file will be shown
     if(count) {
@@ -54,12 +63,15 @@ void StringMatcherProcessor::processParameters (int editDistance,
     } 
   }
 
-  delete stringMatcher;
+  // Dealocating memory for string matchers
+  for (StringMatcher* stringMatcher : stringMatchers) {
+    delete stringMatcher;
+  }
 }
 
 
 int StringMatcherProcessor::findMatchesTextFile (string& textFileName, 
-                                                 StringMatcher* stringMatcher,
+                                                 vector<StringMatcher*>& stringMatchers,
                                                  bool count) {
 
   int totalMatchesCount = 0;
@@ -96,7 +108,7 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
     if (stringEnd == -1) { // we have to scroll the buffer
 
       if (stringStart == -1) { // line without \n to process
-        totalMatchesCount += processTextFileLine(buffer + stringStart + 1, bufferSize, textFileName, stringMatcher, count);
+        totalMatchesCount += processTextFileLine(buffer + stringStart + 1, bufferSize, textFileName, stringMatchers, count);
 
         bufferPositionInFile += bufferSize;
         bufferSize = min(bufferSize, textFileSize - bufferPositionInFile);
@@ -130,7 +142,7 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
       }
     }
     else { // we have a complete text file line to process
-      totalMatchesCount += processTextFileLine(buffer + stringStart + 1, stringEnd - stringStart, textFileName, stringMatcher, count);
+      totalMatchesCount += processTextFileLine(buffer + stringStart + 1, stringEnd - stringStart, textFileName, stringMatchers, count);
     }
   }
 
@@ -140,10 +152,15 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
 int StringMatcherProcessor::processTextFileLine (char* buffer, 
                                                  int length,
                                                  string& textFileName, 
-                                                 StringMatcher* stringMatcher, 
+                                                 vector<StringMatcher*>& stringMatchers, 
                                                  bool count) {
   string nextTextFileLine = string(buffer, length);
-  int matchesCount = stringMatcher->findMatches(nextTextFileLine);
+  int matchesCount = 0;
+
+  // Computing the matches for each string matcher (for one or more patterns)
+  for (StringMatcher* stringMatcher : stringMatchers) {
+    matchesCount += stringMatcher->findMatches(nextTextFileLine);
+  }
 
   // print line if there are matches and count option is not set
   if (matchesCount > 0 && !count) {
