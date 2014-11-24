@@ -3,14 +3,11 @@
 #include <map>
 #include <set>
 #include <queue>
-#include <utility>
 
 using namespace std;
 
 struct FSM {
-  typedef pair<int, char> goToKey;
-
-  map<goToKey, int> goTo;
+  map<int, int*> goTo;
   map<int, int> fail;
   map<int, set<int>> occurrences; 
 };

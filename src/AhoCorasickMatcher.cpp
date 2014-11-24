@@ -6,21 +6,27 @@ AhoCorasickMatcher::AhoCorasickMatcher(vector<string>& patterns) {
 }
 
 AhoCorasickMatcher::~AhoCorasickMatcher(){
+  int statesCount = fsm->goTo.size();
+
+  for (int i = 0; i < statesCount; i++) {
+    delete fsm->goTo[i + 1];
+  }
+
   delete fsm;
 }
 
 int AhoCorasickMatcher::findMatches(string& text) {
   int matchesCount = 0;
-  int currentState = 0;
+  int currentState = 1;
 
   int textLen = text.size();
 
   for (int i = 0; i < textLen; i++) {
-    while (fsm->goTo.count(make_pair(currentState, text.at(i))) == 0) {
+    while (fsm->goTo[currentState][(int) text.at(i)] == 0) {
       currentState = fsm->fail[currentState];
     }
 
-    currentState = fsm->goTo[make_pair(currentState, text.at(i))];
+    currentState = fsm->goTo[currentState][(int) text.at(i)];
 
     if (fsm->occurrences.count(currentState) > 0) {
       matchesCount += fsm->occurrences[currentState].size();
@@ -44,26 +50,33 @@ FSM* AhoCorasickMatcher::buildFSM() {
 }
 
 void AhoCorasickMatcher::buildGoTo(FSM* fsm) {
-  int nextState = 0;
+  int nextState = 1;
   int patternsCount = patterns.size();
+
+  // Initializing array with next states for every alphabet letter for first state
+  fsm->goTo[nextState] = new int[ALPHABET_LEN]();
 
   for (int i = 0; i < patternsCount; i++) {
     string pattern = patterns.at(i);
 
-    int currentState = 0;
+    int currentState = 1; // first state is numbered as 1
     int j = 0;
     int patternLen = pattern.size();
 
-    while (j < patternLen && fsm->goTo.count(make_pair(currentState, pattern.at(j))) != 0) {
-      currentState = fsm->goTo[make_pair(currentState, pattern.at(j))];
+    while (j < patternLen && fsm->goTo.count(currentState) > 0 && fsm->goTo[currentState][(int) pattern.at(j)] != 0) {
+      currentState = fsm->goTo[currentState][(int) pattern.at(j)];
       j++;
     }
 
     while (j < patternLen) {
       nextState++;
-      fsm->goTo[make_pair(currentState, pattern.at(j))] = nextState;
+
+      fsm->goTo[currentState][(int) pattern.at(j)] = nextState;
       currentState = nextState;
       j++;
+
+      // Creating array for each new state
+      fsm->goTo[nextState] = new int[ALPHABET_LEN]();
     }
 
     set<int> currentStateOccurrences = fsm->occurrences[currentState];
@@ -72,9 +85,8 @@ void AhoCorasickMatcher::buildGoTo(FSM* fsm) {
   }
 
   for (int i = 0; i < ALPHABET_LEN; i++) {
-    char letter = (char) i;
-    if (fsm->goTo.count(make_pair(0, letter)) == 0) {
-      fsm->goTo[make_pair(0, letter)] = 0;
+    if (fsm->goTo[1][i] == 0) { // 0 is the fail state
+      fsm->goTo[1][i] = 1;
     }
   }
 }
@@ -84,10 +96,9 @@ void AhoCorasickMatcher::buildFail(FSM* fsm) {
   int nextState, failState;
 
   for (int i = 0; i < ALPHABET_LEN; i++) {
-    char letter = (char) i;
-    if (fsm->goTo[make_pair(0, letter)] != 0) {
-      states.push(fsm->goTo[make_pair(0, letter)]);
-      fsm->fail[fsm->goTo[make_pair(0, letter)]] = 0;
+    if (fsm->goTo[1][i] != 1) {
+      states.push(fsm->goTo[1][i]);
+      fsm->fail[fsm->goTo[1][i]] = 1;
     }
   }
 
@@ -96,19 +107,17 @@ void AhoCorasickMatcher::buildFail(FSM* fsm) {
     states.pop();
 
     for (int i = 0; i < ALPHABET_LEN; i++) {
-      char letter = (char) i;
-      
-      if (fsm->goTo.count(make_pair(currentState, letter)) != 0) {
-        nextState = fsm->goTo[make_pair(currentState, letter)];
+      if (fsm->goTo[currentState][i] != 0) {
+        nextState = fsm->goTo[currentState][i];
 
         states.push(nextState);
         failState = fsm->fail[currentState];
 
-        while (fsm->goTo.count(make_pair(failState, letter)) == 0) {
+        while (fsm->goTo[failState][i] == 0) {
           failState = fsm->fail[failState];
         }
 
-        fsm->fail[nextState] = fsm->goTo[make_pair(failState, letter)];
+        fsm->fail[nextState] = fsm->goTo[failState][i];
 
         set<int> nextStateOccurrences = fsm->occurrences[nextState];
         set<int> failStateOccurrences = fsm->occurrences[fsm->fail[nextState]];
