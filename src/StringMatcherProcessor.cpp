@@ -54,7 +54,7 @@ void StringMatcherProcessor::processParameters (int editDistance,
   // Finding matches for each textfile using the selected algorithm (implemented in stringMatcher)
   int totalMatchesCount;
 
-  for (string textFileName : textFilesName) {
+  for (string& textFileName : textFilesName) {
     totalMatchesCount = findMatchesTextFile(textFileName, stringMatchers, count);
 
     // if count option is set, the total matches count per file will be shown
