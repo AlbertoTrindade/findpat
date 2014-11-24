@@ -24,7 +24,7 @@ int BoyerMooreMatcher::findMatches(string& text) {
   while(index <= textLen - patternLen) {
     indexPat = patternLen - 1;
 
-    while((indexPat >= 0) && (text[index+indexPat] == pattern[indexPat])) {
+    while((indexPat >= 0) && (text.at(index + indexPat) == pattern.at(indexPat))) {
       indexPat--;
     }
 
@@ -33,7 +33,7 @@ int BoyerMooreMatcher::findMatches(string& text) {
       matchesCount++;
     } 
     else {
-      indexText = text[index+indexPat];
+      indexText = text.at(index + indexPat);
       index += max(indexPat - badChar[indexText], goodSuffix[indexPat]);
     }
   }
@@ -82,10 +82,10 @@ int* BoyerMooreMatcher::buildGoodSuffix() {
   int index = 0;
 
   for (int i = 1; i < patternLen; i++) {
-    index = patternLen - i - reversedBorder[i];
+    index = patternLen - 1 - reversedBorder[i];
 
     if((index < patternLen) && (index >= 0)) {
-      if((pattern[index] != pattern[patternLen - i -1]) && (suffix[index] > i - reversedBorder[i])) {
+      if((suffix[index] > i - reversedBorder[i])) {
         suffix[index] = i - reversedBorder[i];
       }
     } 
