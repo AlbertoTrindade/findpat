@@ -1,11 +1,31 @@
 #include "StringMatcher.h"
 
+#include <map>
+#include <set>
+#include <queue>
+#include <utility>
+
 using namespace std;
+
+struct FSM {
+  typedef pair<int, char> goToKey;
+
+  map<goToKey, int> goTo;
+  map<int, int> fail;
+  map<int, set<int>> occurrences; 
+};
 
 class AhoCorasickMatcher: public StringMatcher {
 
 private:
+  static const int ALPHABET_LEN = 256;
+
   vector<string> patterns;
+  FSM* fsm;
+
+  FSM* buildFSM();
+  void buildGoTo(FSM* fsm);
+  void buildFail(FSM* fsm);
 
 public:
   AhoCorasickMatcher(vector<string>& patterns);
