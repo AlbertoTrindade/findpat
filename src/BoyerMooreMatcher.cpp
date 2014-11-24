@@ -76,8 +76,9 @@ int* BoyerMooreMatcher::buildGoodSuffix() {
   int suffixLen = patternLen + 1;
   int* suffix = new int[suffixLen];
 
-  for (int i = 0; i < suffixLen; i++)
+  for (int i = 0; i < suffixLen; i++) {
     suffix[i] = patternLen - border[patternLen];
+  }
 
   int index = 0;
 
@@ -115,7 +116,7 @@ int* BoyerMooreMatcher::buildBorder(string& pattern) {
   }
 
   while(index < patternLen) {
-    indexPat = 0;
+    indexPat = max(0, border[indexPat]);
 
     while((index + indexPat < patternLen) && (pattern.at(index + indexPat) == pattern.at(indexPat))) {
       indexPat++;
