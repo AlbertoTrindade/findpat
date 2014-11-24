@@ -42,12 +42,12 @@ int BoyerMooreMatcher::findMatches(string& text) {
 }
 
 void BoyerMooreMatcher::preProcessPatterns() {
-  badChar = createBadChar();
-  goodSuffix = createGoodSuffix();
+  badChar = buildBadChar();
+  goodSuffix = buildGoodSuffix();
 
 }
 
-int* BoyerMooreMatcher::createBadChar() {
+int* BoyerMooreMatcher::buildBadChar() {
 
   int patternLen = pattern.size();
   int* badChar = new int[ALPHABET_LEN];
@@ -65,13 +65,13 @@ int* BoyerMooreMatcher::createBadChar() {
   return badChar;
 }
 
-int* BoyerMooreMatcher::createGoodSuffix() {
+int* BoyerMooreMatcher::buildGoodSuffix() {
 
   int patternLen = pattern.length();
   string reversedPattern = string(pattern.rbegin(), pattern.rend());
 
-  int* border = createBorder(pattern);
-  int* reversedBorder = createBorder(reversedPattern);
+  int* border = buildBorder(pattern);
+  int* reversedBorder = buildBorder(reversedPattern);
 
   int suffixLen = patternLen + 1;
   int* suffix = new int[suffixLen];
@@ -100,7 +100,7 @@ int* BoyerMooreMatcher::createGoodSuffix() {
   return suffix;
 }
 
-int* BoyerMooreMatcher::createBorder(string& pattern) {
+int* BoyerMooreMatcher::buildBorder(string& pattern) {
 
   int patternLen = pattern.size();
   int* border = new int[patternLen + 1];
