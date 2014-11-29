@@ -1,6 +1,6 @@
 MYPROGRAM = findpat
 
-SOURCES = main.cpp StringMatcherProcessor.cpp StringMatcher.cpp BoyerMooreMatcher.cpp AhoCorasickMatcher.cpp UkkonenMatcher.cpp
+SOURCES = main.cpp StringMatcherProcessor.cpp StringMatcher.cpp BoyerMooreMatcher.cpp AhoCorasickMatcher.cpp UkkonenMatcher.cpp WuManberMatcher.cpp
 INCLUDES = ../libs/
 TARGET_DIR = ../bin/
 

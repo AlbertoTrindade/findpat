@@ -3,6 +3,7 @@
 #include "BoyerMooreMatcher.h"
 #include "AhoCorasickMatcher.h"
 #include "UkkonenMatcher.h"
+#include "WuManberMatcher.h"
 
 void StringMatcherProcessor::processParameters (int editDistance, 
                                                 string& patternFileName,
@@ -50,7 +51,16 @@ void StringMatcherProcessor::processParameters (int editDistance,
   else { // approximate matching
 
     for (int i = 0; i < patternsCount; i++) {
-      StringMatcher* stringMatcher = new UkkonenMatcher(patterns.at(i), editDistance);
+
+      StringMatcher* stringMatcher;
+
+      if(patterns.at(i).size() <= 64) {
+        stringMatcher = new WuManberMatcher(patterns.at(i), editDistance);
+      }
+      else {
+        stringMatcher = new UkkonenMatcher(patterns.at(i), editDistance);
+      }
+      
       stringMatchers.push_back(stringMatcher);
     }
   }
