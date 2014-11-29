@@ -54,10 +54,10 @@ void StringMatcherProcessor::processParameters (int editDistance,
 
       StringMatcher* stringMatcher;
 
-      if(patterns.at(i).size() <= 64) {
+      if(patterns.at(i).size() <= 64) { // if pattern lenght is <= 64, let us use WuManber to take advantage of binary parallelism
         stringMatcher = new WuManberMatcher(patterns.at(i), editDistance);
       }
-      else {
+      else { // otherwise, let's use Ukkonen, which supports pattern of any length (but it is slower)
         stringMatcher = new UkkonenMatcher(patterns.at(i), editDistance);
       }
       
@@ -91,6 +91,12 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
   int totalMatchesCount = 0;
   ifstream textFile(textFileName);
 
+  // Cheking whether file exists
+  if (textFile.fail()) {
+    cout << textFileName << ": No such file or directory" << endl;
+    return 0;
+  }
+
   textFile.seekg(0, ios::end);
   ifstream::pos_type position = textFile.tellg();
 
@@ -113,7 +119,7 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
     stringEnd = -1;
     
     for (; i < bufferSize && i + bufferPositionInFile < textFileSize; i++) {
-      if (buffer[i] == '\n') {
+      if (buffer[i] == '\n') { // we reached the end of a line
         stringEnd = i;
         break;
       }
@@ -148,6 +154,7 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
           memmove(tempBuffer, buffer, movedLength + readSize);
 
           delete [] buffer;
+          
           buffer = tempBuffer;
           bufferSize = movedLength + readSize;
         }
