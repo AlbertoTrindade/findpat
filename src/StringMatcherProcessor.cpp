@@ -2,6 +2,7 @@
 
 #include "BoyerMooreMatcher.h"
 #include "AhoCorasickMatcher.h"
+#include "UkkonenMatcher.h"
 
 void StringMatcherProcessor::processParameters (int editDistance, 
                                                 string& patternFileName,
@@ -48,7 +49,10 @@ void StringMatcherProcessor::processParameters (int editDistance,
   }
   else { // approximate matching
 
-    // TODO create matcher class for an algorithm which finds approximate matches (candidate: Wu-Manber)
+    for (int i = 0; i < patternsCount; i++) {
+      StringMatcher* stringMatcher = new UkkonenMatcher(patterns.at(i), editDistance);
+      stringMatchers.push_back(stringMatcher);
+    }
   }
 
   // Finding matches for each textfile using the selected algorithm (implemented in stringMatcher)

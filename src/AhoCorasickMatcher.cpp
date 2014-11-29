@@ -2,6 +2,7 @@
 
 AhoCorasickMatcher::AhoCorasickMatcher(vector<string>& patterns) {
   this->patterns = patterns;
+  
   preProcessPatterns();
 }
 
@@ -40,8 +41,8 @@ void AhoCorasickMatcher::preProcessPatterns() {
   fsm = buildFSM();
 }
 
-FSM* AhoCorasickMatcher::buildFSM() {
-  FSM* fsm = new FSM;
+AC_FSM* AhoCorasickMatcher::buildFSM() {
+  AC_FSM* fsm = new AC_FSM;
 
   buildGoTo(fsm);
   buildFail(fsm);
@@ -49,7 +50,7 @@ FSM* AhoCorasickMatcher::buildFSM() {
   return fsm;
 }
 
-void AhoCorasickMatcher::buildGoTo(FSM* fsm) {
+void AhoCorasickMatcher::buildGoTo(AC_FSM* fsm) {
   int nextState = 1;
   int patternsCount = patterns.size();
 
@@ -91,7 +92,7 @@ void AhoCorasickMatcher::buildGoTo(FSM* fsm) {
   }
 }
 
-void AhoCorasickMatcher::buildFail(FSM* fsm) {
+void AhoCorasickMatcher::buildFail(AC_FSM* fsm) {
   queue<int> states;
   int nextState, failState;
 

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-struct FSM {
+struct AC_FSM {
   map<int, int*> goTo;
   map<int, int> fail;
   map<int, set<int>> occurrences; 
@@ -18,11 +18,11 @@ private:
   static const int ALPHABET_LEN = 256;
 
   vector<string> patterns;
-  FSM* fsm;
+  AC_FSM* fsm;
 
-  FSM* buildFSM();
-  void buildGoTo(FSM* fsm);
-  void buildFail(FSM* fsm);
+  AC_FSM* buildFSM();
+  void buildGoTo(AC_FSM* fsm);
+  void buildFail(AC_FSM* fsm);
 
 public:
   AhoCorasickMatcher(vector<string>& patterns);
