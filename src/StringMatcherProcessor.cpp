@@ -146,7 +146,7 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
       }
     }
     else { // we have a complete text file line to process
-      totalMatchesCount += processTextFileLine(buffer + stringStart + 1, stringEnd - stringStart, textFileName, stringMatchers, count);
+      totalMatchesCount += processTextFileLine(buffer + stringStart + 1, stringEnd - stringStart - 1, textFileName, stringMatchers, count);
     }
   }
 
@@ -168,11 +168,7 @@ int StringMatcherProcessor::processTextFileLine (char* buffer,
 
   // print line if there are matches and count option is not set
   if (matchesCount > 0 && !count) {
-    cout << textFileName << ": " << nextTextFileLine;
-
-    if (nextTextFileLine.back() != '\n') {
-      cout << endl;
-    }
+    cout << textFileName << ": " << nextTextFileLine << endl;
   }
 
   return matchesCount;
