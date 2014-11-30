@@ -74,11 +74,11 @@ int* BoyerMooreMatcher::buildGoodSuffix() {
   int* border = buildBorder(pattern);
   int* reversedBorder = buildBorder(reversedPattern);
 
-  int suffixLen = patternLen + 1;
-  int* suffix = new int[suffixLen];
+  int goodSuffixLen = patternLen + 1;
+  int* goodSuffix = new int[goodSuffixLen];
 
-  for (int i = 0; i < suffixLen; i++) {
-    suffix[i] = patternLen - border[patternLen];
+  for (int i = 0; i < goodSuffixLen; i++) {
+    goodSuffix[i] = patternLen - border[patternLen];
   }
 
   int index = 0;
@@ -87,8 +87,8 @@ int* BoyerMooreMatcher::buildGoodSuffix() {
     index = patternLen - 1 - reversedBorder[i];
 
     if((index < patternLen) && (index >= 0)) {
-      if((suffix[index] > i - reversedBorder[i])) {
-        suffix[index] = i - reversedBorder[i];
+      if((goodSuffix[index] > i - reversedBorder[i])) {
+        goodSuffix[index] = i - reversedBorder[i];
       }
     } 
     else {
@@ -100,7 +100,7 @@ int* BoyerMooreMatcher::buildGoodSuffix() {
   delete [] border;
   delete [] reversedBorder;
 
-  return suffix;
+  return goodSuffix;
 }
 
 int* BoyerMooreMatcher::buildBorder(string& pattern) {
