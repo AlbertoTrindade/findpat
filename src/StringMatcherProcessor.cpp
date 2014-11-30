@@ -21,7 +21,7 @@ void StringMatcherProcessor::processParameters (int editDistance,
     ifstream patternFile(patternFileName);
     string patternInFile;
 
-    while (std::getline(patternFile, patternInFile)) {
+    while (getline(patternFile, patternInFile)) {
       patterns.push_back(patternInFile);
     }
   }

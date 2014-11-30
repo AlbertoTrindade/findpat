@@ -31,11 +31,12 @@ const option::Descriptor usage[] =
                                                               " or patterns specified by --pattern option, instead of the default exact ones" },
     {PATTERNFILE, 0, "p", "pattern", Arg::NonEmpty, "  -p, --pattern  \tSpecify a file with patterns to be searched, one per line," 
                                                                           " instead of using PATTERN" },
-    {COUNT, 0, "c", "count", Arg::None, "  -c, --count  \tInstead of printing the lines in which the patterns occur,"
+    {COUNT, 0, "c", "count", Arg::None, "  -c, --count  \tInstead of printing the TEXTFILE lines in which the patterns occur,"
                                                              " the total count of occurrences per file will be shown" },
     {UNKNOWN, 0, "",  "", Arg::None, "\nExamples:\n"
                                              "  findpat ababc textfile1.txt textfile2.txt\n"
-                                             "  findpat -e 2 -p patterfile.txt textfile.txt\n" },
+                                             "  findpat -e 2 -p patterfile.txt textfile.txt\n"
+                                             "  findpat -c -e 2 ababc textfile*.txt\n" },
     {0, 0, 0, 0, 0, 0}
  };
 

@@ -1,72 +1,56 @@
-------------------------------
-FERRAMENTA
-------------------------------
-
 Findpat
+==============================
 
 ------------------------------
-AUTORES
+Autores
 ------------------------------
 
 Alberto Trindade Tavares (att)
 Bruna Carolina Baudel de Santana (bcbs)
 
-
 ------------------------------
-INSTRUÇÕES
+Instruções de Compilação
 ------------------------------
 
-Para gerar o executável:
+Para gerar o executável, execute os comandos:
 - cd src/
 - make
+O executável de findpat é gerado e disponibilizado no diretório /bin
 
-Para rodar o executável:
-- cd bin/
-- ./findpat [OPTIONS] PATTERN TEXTFILE [TEXTFILE...]
-
-Para apagar o diretório bin com o executável:
+Para apagar o diretório /bin com o executável, execute os comandos:
 - cd src/
 - make clean
 
-
-
-
+Essas instruções consideram que o usuário está na pasta raiz do projeto. Se o usuário já estiver no diretório /src, não é necessário o primeiro comando.
 
 ------------------------------
-USO
+Instruções de Uso
 ------------------------------
 
-USAGE: findpat [OPTIONS] PATTERN TEXTFILE [TEXTFILE...]
-Search for PATTERN in each TEXTFILE
-If --pattern option is set, a list of patterns will be used instead of PATTERN
-Multiple files can be indicated for TEXTFILE by using wildcards
+Uso: ./findpat [OPTIONS] PATTERN TEXTFILE [TEXTFILE...]
 
-Options:
-  -h, --help     Print usage and exit
-  -e, --edit     Specify a maximun edit distance to find approximate occurrences
-                 of PATTERN or patterns specified by --pattern option, instead
-                 of the default exact ones
-  -p, --pattern  Specify a file with patterns to be searched, one per line,
-                 instead of using PATTERN
-  -c, --count    Instead of printing the lines in which the patterns occur, the
-                 total count of occurrences per file will be shown
+Esse comando procura por PATTERN em cada TEXTFILE
+Se a opção --pattern for setada, uma lista de padrões será usada no lugar de PATTERN
+Múltiplos arquivos podem ser indicados para TEXTFILE através do uso de wildcards
+
+Opções (OPTIONS):
+  -h, --help     Imprime instruções de uso (em Inglês)
+  -e, --edit     Especifica uma distância de edição máxima para encontrar ocorrências aproximadas
+                 de PATTERN ou dos padrões especificados pela opção --pattern, ao invés de ocorrências 
+                 exatas, que é a opção padrão
+  -p, --pattern  Especifica um arquivo com padrões para serem buscados, um por linha,
+                 para serem usados no lugar de PATTERN
+  -c, --count    Ao invés de imprimir as linhas de TEXTFILE em que os padrões ocorrem, a quantidade
+                 total de ocorrência por arquivo é exibida
 
 ------------------------------
-EXEMPLOS
+Exemplos de Uso
 ------------------------------
 
 Busca exata:
-
-- Buscar 1 padrão: ./findpat -c ababc textfile1.txt
-
-- Buscar mais de 1 padrão: ./findpat -c -p patternfile.txt textfile1.txt
+- Imprime linhas de textfile1.txt onde "ababc" ocorre: ./findpat ababc textfile1.txt
+- Imprime a quantidade de ocorrências em textfile1.txt de padrões listados em patternfile.txt: ./findpat -c -p patternfile.txt textfile1.txt
 
 Busca aproximada:
-
-- Buscar 1 padrão: ./findpat -c -e 2 -p ababc textfile.txt
-
-- Buscar mais de 1 padrão: ./findpat -c -e 2 -p patternfile.txt textfile*.txt
-
-
-
-
+- Imprime linhas de textfile.txt onde "ababc" ocorre com distância de edição máxima 1: ./findpat -e 1 -p ababc textfile.txt
+- Imprime a quantidade de ocorrências com distância de edição máxima 2 de padrões listados em patternfile.txt, para cada arquivo de texto prefixado por "textfile": ./findpat -c -e 2 -p patternfile.txt textfile*.txt
