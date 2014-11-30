@@ -34,24 +34,18 @@ void StringMatcherProcessor::processParameters (int editDistance,
   if (editDistance == 0) {// exact matching
 
     if (patternsCount <= MAX_PATTERNS_BOYER_MOORE) { // use BoyerMoore until this number of patterns
-
-      // We have one string matcher for each pattern
       for (int i = 0; i < patternsCount; i++) {
         StringMatcher* stringMatcher = new BoyerMooreMatcher(patterns.at(i));
         stringMatchers.push_back(stringMatcher);
       }
     }
     else { // use Aho-Corasick for a larger number of patterns
-
-      // We have only one string matcher for all the patterns
       StringMatcher* stringMatcher = new AhoCorasickMatcher(patterns);
       stringMatchers.push_back(stringMatcher);
     }
   }
   else { // approximate matching
-
     for (int i = 0; i < patternsCount; i++) {
-
       StringMatcher* stringMatcher;
 
       if(patterns.at(i).size() <= 64) { // if pattern lenght is <= 64, let us use WuManber to take advantage of binary parallelism
@@ -77,7 +71,7 @@ void StringMatcherProcessor::processParameters (int editDistance,
     } 
   }
 
-  // Dealocating memory for string matchers
+  // Deallocating memory for string matchers
   for (StringMatcher* stringMatcher : stringMatchers) {
     delete stringMatcher;
   }
@@ -91,7 +85,7 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
   int totalMatchesCount = 0;
   ifstream textFile(textFileName);
 
-  // Cheking whether file exists
+  // Checking whether file exists
   if (textFile.fail()) {
     cout << textFileName << ": No such file or directory" << endl;
     return 0;
@@ -135,16 +129,18 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
 
         delete [] buffer;
         
+        // recreating buffer with the next chunk to be read
         buffer = new char[bufferSize];
         textFile.read(buffer, bufferSize);
       }
       else{ // end of buffer reached
         int movedLength = bufferSize - stringStart - 1;
-        memmove(buffer, buffer + stringStart + 1,movedLength);
+        memmove(buffer, buffer + stringStart + 1, movedLength);
         bufferPositionInFile += stringStart + 1;
 
         int readSize = min((long long) bufferSize - movedLength, textFileSize - bufferPositionInFile - movedLength);
 
+        // reading next chunk from text file
         if (readSize != 0) {
           textFile.read(buffer + movedLength, readSize);
         }
@@ -154,7 +150,7 @@ int StringMatcherProcessor::findMatchesTextFile (string& textFileName,
           memmove(tempBuffer, buffer, movedLength + readSize);
 
           delete [] buffer;
-          
+
           buffer = tempBuffer;
           bufferSize = movedLength + readSize;
         }

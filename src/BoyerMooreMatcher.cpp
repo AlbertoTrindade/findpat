@@ -28,12 +28,14 @@ int BoyerMooreMatcher::findMatches(string& text) {
       indexPat--;
     }
 
-    if(indexPat < 0) {
+    if(indexPat < 0) { // pattern was completely matched
       index += goodSuffix[0];
       matchesCount++;
     } 
     else {
       indexText = text.at(index + indexPat);
+
+      // Let's use the best jump between the ones provided by badChar and goodSuffix
       index += max(indexPat - badChar[indexText], goodSuffix[indexPat]);
     }
   }
@@ -44,7 +46,6 @@ int BoyerMooreMatcher::findMatches(string& text) {
 void BoyerMooreMatcher::preProcessPatterns() {
   badChar = buildBadChar();
   goodSuffix = buildGoodSuffix();
-
 }
 
 int* BoyerMooreMatcher::buildBadChar() {
@@ -95,6 +96,7 @@ int* BoyerMooreMatcher::buildGoodSuffix() {
     }
   }
 
+  // Deallocating memory for borders
   delete [] border;
   delete [] reversedBorder;
 
@@ -122,6 +124,7 @@ int* BoyerMooreMatcher::buildBorder(string& pattern) {
       indexPat++;
       border[index + indexPat] = indexPat;
     }
+
     index += indexPat - border[indexPat];
   }
 

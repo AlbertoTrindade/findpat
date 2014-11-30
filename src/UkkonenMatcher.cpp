@@ -26,7 +26,7 @@ int UkkonenMatcher::findMatches(string& text) {
   for (int i = 0; i < textLen; i++) {
     currentState = fsm->delta[currentState][(int) text.at(i)];
 
-    if (fsm->acceptStates.count(currentState) > 0) {
+    if (fsm->acceptStates.count(currentState) > 0) { // currentState is an accept state
       matchesCount++;
     }
   }

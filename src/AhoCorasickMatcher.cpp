@@ -29,7 +29,7 @@ int AhoCorasickMatcher::findMatches(string& text) {
 
     currentState = fsm->goTo[currentState][(int) text.at(i)];
 
-    if (fsm->occurrences.count(currentState) > 0) {
+    if (fsm->occurrences.count(currentState) > 0) { // accept state
       matchesCount += fsm->occurrences[currentState].size();
     }
   }
@@ -86,7 +86,7 @@ void AhoCorasickMatcher::buildGoTo(AC_FSM* fsm) {
   }
 
   for (int i = 0; i < ALPHABET_LEN; i++) {
-    if (fsm->goTo[1][i] == 0) { // 0 is the fail state
+    if (fsm->goTo[1][i] == 0) { // 0 is the _|_ (fail) state
       fsm->goTo[1][i] = 1;
     }
   }
@@ -123,6 +123,7 @@ void AhoCorasickMatcher::buildFail(AC_FSM* fsm) {
         set<int> nextStateOccurrences = fsm->occurrences[nextState];
         set<int> failStateOccurrences = fsm->occurrences[fsm->fail[nextState]];
 
+        // Appending the "fail state" occurrences to the next state one
         for(set<int>::iterator iterator = failStateOccurrences.begin(); iterator != failStateOccurrences.end(); iterator++) {
           nextStateOccurrences.insert(*iterator);
         }
